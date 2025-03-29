@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Brain, User } from "lucide-react"
+import { GraduationCap, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/component/theme-toggle"
 import { motion } from "framer-motion"
@@ -16,10 +16,10 @@ export function DebateNavbar() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Brain className="h-6 w-6 text-primary" />
+            <GraduationCap className="h-6 w-6 text-primary" />
           </motion.div>
           <motion.h1
-            className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-300 neon-text"
+            className="text-xl font-bold gradient-text neon-text"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -35,16 +35,25 @@ export function DebateNavbar() {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium hover:text-primary transition-colors animated-border"
+            >
               Dashboard
             </Link>
-            <Link href="/interview" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/interview"
+              className="text-sm font-medium hover:text-primary transition-colors animated-border"
+            >
               Interview
             </Link>
-            <Link href="/extempore" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/extempore"
+              className="text-sm font-medium hover:text-primary transition-colors animated-border"
+            >
               Extempore
             </Link>
-            <Link href="/settings" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link href="/settings" className="text-sm font-medium hover:text-primary transition-colors animated-border">
               Settings
             </Link>
           </nav>

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Brain, MessageSquare, Play, Mic } from "lucide-react"
+import { ArrowRight, MessageSquare, Play, Mic, GraduationCap } from "lucide-react"
 import { FeatureCard } from "@/components/component/landing/feature-card"
 import { AnimatedText } from "@/components/component/landing/animated-text"
 import { ThemeToggle } from "@/components/component/theme-toggle"
@@ -20,10 +20,10 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <Brain className="h-8 w-8 text-primary" />
+              <GraduationCap className="h-8 w-8 text-primary" />
             </motion.div>
             <motion.h1
-              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-300 neon-text"
+              className="text-2xl font-bold gradient-text neon-text"
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -39,13 +39,19 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/features" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/features"
+                className="text-sm font-medium hover:text-primary transition-colors animated-border"
+              >
                 Features
               </Link>
-              <Link href="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/pricing"
+                className="text-sm font-medium hover:text-primary transition-colors animated-border"
+              >
                 Pricing
               </Link>
-              <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors animated-border">
                 About
               </Link>
             </nav>
@@ -67,7 +73,7 @@ export default function Home() {
 
       <main className="flex-grow pt-16">
         {/* Hero Section */}
-        <section className="py-6 md:py-24 relative overflow-hidden hero-gradient">
+        <section className="py-5 md:py-20 relative overflow-hidden hero-gradient">
           <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8">
             <motion.div
               className="md:w-1/2 z-10"
@@ -76,7 +82,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
             >
               <h1 className="text-4xl md:text-6xl font-bold mb-4">
-                Master the art of <AnimatedText text="communication" className="text-primary neon-text" /> with AI
+                Master the art of <AnimatedText text="communication" className="gradient-text neon-text" /> with AI
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg">
                 Practice debates, interviews, and public speaking with our AI-powered platform. Get real-time feedback
@@ -126,7 +132,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Features</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">Key Features</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 EduVox combines cutting-edge AI with interactive learning to help you become a more effective
                 communicator.
@@ -141,7 +147,7 @@ export default function Home() {
                 delay={0.1}
               />
               <FeatureCard
-                icon={<Brain className="h-10 w-10 text-primary" />}
+                icon={<GraduationCap className="h-10 w-10 text-primary" />}
                 title="Interview Simulation"
                 description="Prepare for job interviews with customized questions from different industries."
                 delay={0.2}
@@ -161,17 +167,17 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <Brain className="h-6 w-6 text-primary" />
-              <span className="font-bold">EduVox</span>
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <span className="font-bold gradient-text">EduVox</span>
             </div>
             <div className="flex flex-wrap gap-8 text-sm text-muted-foreground">
-              <Link href="/terms" className="hover:text-primary transition-colors">
+              <Link href="/terms" className="hover:text-primary transition-colors animated-border">
                 Terms of Service
               </Link>
-              <Link href="/privacy" className="hover:text-primary transition-colors">
+              <Link href="/privacy" className="hover:text-primary transition-colors animated-border">
                 Privacy Policy
               </Link>
-              <Link href="/contact" className="hover:text-primary transition-colors">
+              <Link href="/contact" className="hover:text-primary transition-colors animated-border">
                 Contact Us
               </Link>
             </div>
