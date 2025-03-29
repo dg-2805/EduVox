@@ -1,6 +1,6 @@
-from utils.fact_checker import ImprovedFactChecker
-from voice.handler import VoiceHandler
-from voice.analysis import VoiceAnalyzer
+# from utils.fact_checker import ImprovedFactChecker
+# from voice.handler import VoiceHandler
+# from voice.analysis import VoiceAnalyzer
 
 class InterviewReportGenerator:
     def __init__(self):
