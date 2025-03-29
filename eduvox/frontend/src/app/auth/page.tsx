@@ -1,32 +1,93 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Brain, ChevronLeft, Github, ChromeIcon as Google, Linkedin } from "lucide-react"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Brain,
+  ChevronLeft,
+  Github,
+  ChromeIcon as Google,
+  Linkedin,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function AuthPage() {
-  const searchParams = useSearchParams()
-  const [activeTab, setActiveTab] = useState("login")
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState("login");
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+  });
 
   useEffect(() => {
     if (searchParams?.get("signup") === "true") {
-      setActiveTab("signup")
+      setActiveTab("signup");
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [searchParams])
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [searchParams]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleLogin = async () => {
+    console.log("Sending login request...");
+    console.log("Password being sent:", formData.password);
+    try {
+      const response = await fetch("http://localhost:3009/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: formData.email,
+          password: formData.password,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Login successful!");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
+
+  const handleSignup = async () => {
+    console.log("Sending signup request...");
+    try {
+      const response = await fetch("http://localhost:3009/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          hash_password: formData.password, // use hash_password key instead of password
+          username: formData.name,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Signup successful!");
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
@@ -34,7 +95,9 @@ export default function AuthPage() {
       <div
         className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"
         style={{
-          transform: `translate(${mousePosition.x / 50}px, ${mousePosition.y / 50}px)`,
+          transform: `translate(${mousePosition.x / 50}px, ${
+            mousePosition.y / 50
+          }px)`,
         }}
       />
 
@@ -84,7 +147,11 @@ export default function AuthPage() {
           whileHover={{ boxShadow: "0 10px 40px rgba(124, 58, 237, 0.2)" }}
           transition={{ duration: 0.3 }}
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="signup">Sign up</TabsTrigger>
@@ -102,18 +169,34 @@ export default function AuthPage() {
                 >
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="hello@example.com" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="hello@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
-                      <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                      <Link
+                        href="/forgot-password"
+                        className="text-xs text-primary hover:underline"
+                      >
                         Forgot password?
                       </Link>
                     </div>
-                    <Input id="password" type="password" />
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                    />
                   </div>
-                  <Button className="w-full">Login</Button>
+                  <Button className="w-full" onClick={handleLogin}>
+                    Login
+                  </Button>
                 </motion.div>
               </TabsContent>
 
@@ -128,45 +211,42 @@ export default function AuthPage() {
                 >
                   <div className="space-y-2">
                     <Label htmlFor="signup-name">Full Name</Label>
-                    <Input id="signup-name" type="text" placeholder="John Doe" />
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="John Doe"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
-                    <Input id="signup-email" type="email" placeholder="hello@example.com" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="hello@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>
-                    <Input id="signup-password" type="password" />
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                    />
                   </div>
-                  <Button className="w-full">Create Account</Button>
+                  <Button className="w-full" onClick={handleSignup}>
+                    Create Account
+                  </Button>
                 </motion.div>
               </TabsContent>
             </AnimatePresence>
           </Tabs>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-card/50 px-2 text-muted-foreground">or continue with</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <Button variant="outline" size="icon" className="w-full">
-              <Google className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="w-full">
-              <Github className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="w-full">
-              <Linkedin className="h-4 w-4" />
-            </Button>
-          </div>
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }
-
