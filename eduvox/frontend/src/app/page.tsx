@@ -40,18 +40,18 @@ export default function Home() {
           >
             <nav className="hidden md:flex items-center gap-6">
               <Link
-                href="/features"
+                href="#features"
                 className="text-sm font-medium hover:text-primary transition-colors animated-border"
               >
                 Features
               </Link>
               <Link
-                href="/pricing"
+                href="/dashboard"
                 className="text-sm font-medium hover:text-primary transition-colors animated-border"
               >
-                Pricing
+                Dashboard
               </Link>
-              <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors animated-border">
+              <Link href="#about" className="text-sm font-medium hover:text-primary transition-colors animated-border">
                 About
               </Link>
             </nav>
