@@ -1,5 +1,5 @@
 
-![ChatGPT Image Mar 30, 2025, 12_19_50 PM](https://github.com/user-attachments/assets/a2f65a7c-1a91-47f2-a2be-9a8678bd9a0c)
+![ChatGPT Image Mar 30, 2025, 12_19_50 PM](https://github.com/user-attachments/assets/4cd9d96d-23f7-4b4d-8d65-8ac793ae2b57)
 
 # EduVox: Your Ultimate Interview Prep Companion 🚀🎓  
 
