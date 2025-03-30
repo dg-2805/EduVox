@@ -47,8 +47,8 @@ export default function DebatePage() {
   const [rounds, setRounds] = useState("3")
   const [currentRound, setCurrentRound] = useState(1)
   const [isSpeaking, setIsSpeaking] = useState(false)
-  const [textToSpeech, setTextToSpeech] = useState(false)
   const [showHint, setShowHint] = useState(false)
+  const [stance, setStance] = useState("for")
 
   const handleSendMessage = () => {
     if (!userMessage.trim()) return
@@ -82,14 +82,6 @@ export default function DebatePage() {
           timestamp: new Date(),
         },
       ])
-
-      // Speak the response if text-to-speech is enabled
-      if (textToSpeech) {
-        const utterance = new SpeechSynthesisUtterance(randomResponse)
-        utterance.rate = 1.0
-        utterance.pitch = 1.0
-        window.speechSynthesis.speak(utterance)
-      }
     }, 1500)
   }
 
@@ -132,10 +124,6 @@ export default function DebatePage() {
 
   const toggleSpeech = () => {
     setIsSpeaking(!isSpeaking)
-  }
-
-  const toggleTextToSpeech = () => {
-    setTextToSpeech(!textToSpeech)
   }
 
   const formatTime = (seconds: number) => {
@@ -215,18 +203,13 @@ export default function DebatePage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                               <label className="text-sm font-medium">Select a Topic</label>
-                              <Select onValueChange={setSelectedTopic} value={selectedTopic}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a topic" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {topics.map((topic) => (
-                                    <SelectItem key={topic} value={topic}>
-                                      {topic}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <Textarea
+                                value={selectedTopic}
+                                onChange={(e) => setSelectedTopic(e.target.value)}
+                                placeholder="Type your topic here..."
+                                className="resize-none"
+                                rows={2}
+                              />
                             </div>
 
                             <div className="space-y-4">
@@ -236,50 +219,72 @@ export default function DebatePage() {
                                   <SelectValue placeholder="Select rounds" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="1">1 Round</SelectItem>
                                   <SelectItem value="3">3 Rounds</SelectItem>
+                                  <SelectItem value="4">4 Rounds</SelectItem>
                                   <SelectItem value="5">5 Rounds</SelectItem>
+                                  <SelectItem value="6">6 Rounds</SelectItem>
                                   <SelectItem value="7">7 Rounds</SelectItem>
+                                  <SelectItem value="8">8 Rounds</SelectItem>
+                                  <SelectItem value="9">9 Rounds</SelectItem>
+                                  <SelectItem value="10">10 Rounds</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
 
                             <div className="space-y-4">
-                              <label className="text-sm font-medium">Timer per Round</label>
-                              <Select onValueChange={setSelectedTimer} value={selectedTimer}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select timer" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="0">No Timer</SelectItem>
-                                  <SelectItem value="30">30 Seconds</SelectItem>
-                                  <SelectItem value="60">1 Minute</SelectItem>
-                                  <SelectItem value="120">2 Minutes</SelectItem>
-                                  <SelectItem value="300">5 Minutes</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium">Text-to-Speech</label>
-                                <Button variant="ghost" size="sm" onClick={toggleTextToSpeech} className="gap-2">
-                                  {textToSpeech ? (
-                                    <>
-                                      <Volume2 className="h-4 w-4" />
-                                      <span>Enabled</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <VolumeX className="h-4 w-4" />
-                                      <span>Disabled</span>
-                                    </>
-                                  )}
-                                </Button>
+                              <label className="text-sm font-medium">Stance</label>
+                              <div className="flex space-x-4">
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="for"
+                                    name="stance"
+                                    value="for"
+                                    checked={stance === "for"}
+                                    onChange={() => setStance("for")}
+                                  />
+                                  <label htmlFor="for" className="ml-2">For</label>
+                                </div>
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="against"
+                                    name="stance"
+                                    value="against"
+                                    checked={stance === "against"}
+                                    onChange={() => setStance("against")}
+                                  />
+                                  <label htmlFor="against" className="ml-2">Against</label>
+                                </div>
                               </div>
-                              <p className="text-xs text-muted-foreground">
-                                AI responses will be read aloud if enabled.
-                              </p>
+                            </div>
+
+                            <div className="space-y-4">
+                              <label className="text-sm font-medium">Communication Method</label>
+                              <div className="flex space-x-4">
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="voice"
+                                    name="communication"
+                                    value="voice"
+                                    checked={isSpeaking}
+                                    onChange={() => setIsSpeaking(true)}
+                                  />
+                                  <label htmlFor="voice" className="ml-2">Voice</label>
+                                </div>
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="text"
+                                    name="communication"
+                                    value="text"
+                                    checked={!isSpeaking}
+                                    onChange={() => setIsSpeaking(false)}
+                                  />
+                                  <label htmlFor="text" className="ml-2">Text</label>
+                                </div>
+                              </div>
                             </div>
                           </div>
 
