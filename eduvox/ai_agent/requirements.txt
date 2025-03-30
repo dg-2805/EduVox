@@ -1,0 +1,24 @@
+python-dotenv
+google-generativeai
+requests
+spacy
+scikit-learn
+transformers
+torch
+nltk
+
+# Core
+numpy
+scipy
+
+# Voice Processing
+sounddevice
+vosk
+gTTS
+playsound
+librosa
+soundfile
+
+# AI
+openai
+SpeechBrain
