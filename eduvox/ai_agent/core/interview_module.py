@@ -115,7 +115,7 @@ class InterviewAgent:
         self.experience = None
         self.difficulty = None
         self.responses = []
-    
+
     def analyze_resume_with_gemini(self, resume_text):
         """
         Uses Gemini API to analyze resume text and extract skills, experience, and achievements.
@@ -166,27 +166,18 @@ class InterviewAgent:
         except Exception as e:
             print(f"Error analyzing resume with Gemini: {e}")
             return None
-    
-    def collect_candidate_info(self):
+
+    def collect_candidate_info(self, job_profile, resume_path):
         """
-        Collect candidate's professional details from resume.
-        
-        Extracts skills, achievements, and experience from the resume file 
-        (PDF or image) using OCR. Falls back to manual input if extraction fails.
+        Collect candidate's professional details from the resume file.
+        Extracts skills, achievements, and experience from the resume file (PDF or image).
         """
-        print("\n=== Candidate Information ===")
-        
-        job_profile = input("What job profile are you interested in? ").strip()
-        
-        # Get resume file path and extract information from the resume
-        resume_path = input("Please enter the path to your resume file (PDF or image): ").strip()
-        # Remove any extra quotes from the file path (if provided)
-        resume_path = resume_path.strip('\"')
+        print("\n=== Collecting Candidate Information ===")
         
         resume_skills = []
         resume_experience = ""
         resume_achievements = []
-        
+
         if os.path.exists(resume_path):
             ext = os.path.splitext(resume_path)[1].lower()
             
@@ -201,85 +192,39 @@ class InterviewAgent:
                 print("Unsupported file format for resume extraction.")
             
             if text:
-                # Ask if user wants to use Gemini for analysis (default to regex-based)
-                use_gemini = input("Use Gemini AI for resume analysis? (y/N): ").strip().lower() == 'y'
+                # Use Gemini for analysis if available
+                gemini_analysis = self.analyze_resume_with_gemini(text)
                 
-                if use_gemini:
-                    # Try Gemini-based analysis
-                    gemini_analysis = self.analyze_resume_with_gemini(text)
-                    
-                    if gemini_analysis:
-                        # Extract data from Gemini analysis
-                        resume_skills = gemini_analysis.get('skills', [])
-                        if resume_skills:
-                            print(f"Extracted Skills: {', '.join(resume_skills)}")
-                        
-                        resume_experience = gemini_analysis.get('experience', "")
-                        if resume_experience:
-                            print(f"Extracted Experience: {resume_experience}")
-                        
-                        resume_achievements = gemini_analysis.get('achievements', [])
-                        if resume_achievements:
-                            print(f"Extracted Achievements: {len(resume_achievements)} items")
-                    else:
-                        print("Gemini analysis failed, falling back to regex method")
-                        # Continue to regex method below
-                
-                # If not using Gemini or if Gemini analysis failed, use regex-based extraction
-                if not use_gemini or not gemini_analysis:
+                if gemini_analysis:
+                    # Extract data from Gemini analysis
+                    resume_skills = gemini_analysis.get('skills', [])
+                    resume_experience = gemini_analysis.get('experience', "")
+                    resume_achievements = gemini_analysis.get('achievements', [])
+                else:
+                    # Fallback to regex-based extraction
                     sections = extract_sections(text)
-                    
-                    # Extract skills
                     if 'skills' in sections:
-                        # Split skills using common delimiters (comma, semicolon, newline)
                         resume_skills = [skill.strip() for skill in re.split(r',|;|\n', sections['skills']) if skill.strip()]
-                        print(f"Extracted Skills: {', '.join(resume_skills)}")
-                    
-                    # Extract experience
                     if 'experience' in sections:
                         resume_experience = sections['experience']
-                        # Try to extract years of experience
-                        year_matches = re.findall(r'(\d+)[\+]?\s*(?:year|yr|yrs)', text, re.IGNORECASE)
-                        if year_matches:
-                            resume_experience = max([int(y) for y in year_matches])
-                            print(f"Extracted Experience: {resume_experience} years")
-                        else:
-                            print("Experience section found but couldn't determine years.")
-                    
-                    # Extract achievements
                     if 'achievements' in sections:
-                        # Split achievements by newlines or bullet points
                         resume_achievements = [
                             achievement.strip() 
                             for achievement in re.split(r'•|\*|\-|\n', sections['achievements']) 
                             if achievement.strip()
                         ]
-                        print(f"Extracted Achievements: {len(resume_achievements)} items")
         
-        # Fall back to manual input where needed
-        if not resume_skills:
-            print("No skills found in the resume. Please enter your key skills manually.")
-            skills_input = input("List your key skills (comma-separated): ").strip()
-            resume_skills = [skill.strip() for skill in skills_input.split(',')]
-        
-        if not resume_experience:
-            experience_input = input("Years of experience: ").strip()
-            resume_experience = experience_input
-        
-        expected_salary = input("What is your expected salary range? ").strip()
-        
-        # Store the extracted/input information
+        # Store the extracted information
         self.skills = resume_skills
         self.experience = resume_experience
         
         return {
             "job_profile": job_profile,
             "skills": resume_skills,
-            "expected_salary": expected_salary,
             "experience": resume_experience,
             "achievements": resume_achievements
         }
-    
+
     def select_difficulty_level(self):
         """Select interview difficulty"""
         print("\nInterview Difficulty Levels:")
@@ -294,7 +239,7 @@ class InterviewAgent:
                 return self.difficulty
             except (ValueError, IndexError):
                 print("Invalid input. Please enter 1, 2, or 3.")
-    
+
     def generate_interview_questions(self, candidate_info, difficulty):
         """Generate interview questions using Gemini API"""
         job_profile = candidate_info['job_profile']
@@ -454,7 +399,7 @@ class InterviewAgent:
         ]
         
         return questions
-    
+
     def conduct_interview(self, candidate_info, difficulty, questions):
         """Conduct interview and collect responses"""
         interview_history = []
@@ -522,24 +467,29 @@ class InterviewAgent:
             ai_analysis
         )
 
-    def run_interview(self):
-        """Execute complete interview flow with responses"""
+    def run_interview(self, data, resume_path):
+        """
+        Execute the complete interview process.
+        Parameters:
+        - data: Parsed JSON from the frontend containing job_profile and difficulty.
+        - resume_path: Path to the uploaded resume file.
+        """
         print("\n=== Starting Interview ===")
         
-        # Collect candidate information with resume extraction
-        candidate_info = self.collect_candidate_info()
-        
-        # Select difficulty level
-        difficulty = self.select_difficulty_level()
-        
+        # Extract job profile and difficulty from the data
+        job_profile = data.get('job_profile')
+        difficulty = data.get('difficulty')
+
+        if not job_profile or not difficulty:
+            raise ValueError("Job profile and difficulty level are required.")
+
+        # Collect candidate information
+        candidate_info = self.collect_candidate_info(job_profile, resume_path)
+
         # Generate questions using Gemini
         questions = self.generate_interview_questions(candidate_info, difficulty)
-        
+
         # Conduct the full interview with responses
         report = self.conduct_interview(candidate_info, difficulty, questions)
-        
-        # Display report
-        print("\n=== Interview Report ===")
-        print(report)
-        
+
         return report
