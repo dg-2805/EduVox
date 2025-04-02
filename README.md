@@ -1,7 +1,7 @@
 
 ![ChatGPT Image Mar 30, 2025, 12_19_50 PM](https://github.com/user-attachments/assets/4cd9d96d-23f7-4b4d-8d65-8ac793ae2b57)
 
-# EduVox: Your Ultimate Interview Prep Companion 🚀🎓  
+# EduVox: Your Ultimate Communication Companion 🚀🎓  
 
 ## Overview 📝  
 Welcome to **EduVox**! Elevate your interview game with our interactive platform designed to sharpen both your debating and interview skills. Whether you prefer typing or speaking, EduVox offers tailored practice sessions to suit your needs.  
